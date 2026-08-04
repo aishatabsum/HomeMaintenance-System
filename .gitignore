@@ -1,0 +1,4 @@
+*.class
+bin/
+DBconnection.java
+.vscode/
