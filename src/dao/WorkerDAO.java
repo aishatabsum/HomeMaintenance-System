@@ -44,11 +44,12 @@ stmt.setInt(1,workerid);
 rs=stmt.executeQuery();
 if(rs.next()){
 worker_name=rs.getString("workername");
-return worker_name;
+
 }
 rs.close();
 stmt.close();
 con.close();
+return worker_name;
  }catch(Exception e){
     System.out.println("Error while fetching worker name: "+e.getMessage());
  }
@@ -81,12 +82,11 @@ w.setw_passHash(rs.getString("pass_hash"));
 w.setw_passSalt(rs.getString("pass_salt"));
 w.setw_isOnduty(rs.getBoolean("is_onduty"));
 w.setw_profId(rs.getInt("profid"));
-
-    return w;
 }
 rs.close();
 stmt.close();
 con.close();
+return w;
  }catch(Exception e){
     System.out.println("Error while fetching worker data: "+e.getMessage());
  }
@@ -98,6 +98,7 @@ return null;
         Connection con=null;
  PreparedStatement stmt=null;
  ResultSet rs=null;
+ boolean workernameUsed=false;
 String query="Select workerid from Workers where workername=?";
  try{
 con=DBconnection.getConnection();
@@ -106,11 +107,12 @@ stmt=con.prepareStatement(query);
 stmt.setString(1,workername);
 rs=stmt.executeQuery();
 if(rs.next()){
-return true;
+workernameUsed=true;
 }
 rs.close();
 stmt.close();
 con.close();
+return workernameUsed;
  }catch(Exception e){
     System.out.println("Error while checking worker name existence: "+e.getMessage());
  }
@@ -118,10 +120,10 @@ return false;
     }
 
 
-public void registerNewWorker(String workername,String phone_no,int age,String gender,String city,String street, String indicator,String plain_password,Boolean is_onduty, int profid){
+public boolean registerNewWorker(String workername,String phone_no,int age,String gender,String city,String street, String indicator,String plain_password,Boolean is_onduty, int profid){
     if(age<18){
         System.out.println("OOPs , Registration Failed!. you are Under 18! ");
-        return;
+        return false;
     }
     if(!workernameTaken(workername)){
 Connection con=null;
@@ -151,14 +153,19 @@ con.close();
  
  }catch(Exception e){
     System.out.println("Error while registering new worker: "+e.getMessage());
+    return false;
  }
- if(result>0) System.out.println("Registered successfully!");
- else System.out.println("OOPS! registration failed!");
+ if(result>0) {System.out.println("Registered successfully!");
+ return true;
  }
- else 
+ else {System.out.println("OOPS! registration failed!");
+ return false;
+ }
+}
+ else {
     System.out.println("This workername already exists: Try using a different name.\n");
- 
-    
+ return false;
+ }
     }
 
     public boolean verifyWorkerLogin(String workername, String plainpassword){
@@ -177,7 +184,7 @@ return false;
 }else{
      String storedSalt = rs.getString("pass_salt");
     String storedHash = rs.getString("pass_hash");
- String testhash=hashPassword(storedSalt+plainpassword);
+ String testhash=hashPassword(plainpassword+storedSalt);
  return testhash.equals(storedHash);
 }
 }catch(Exception e){
@@ -210,8 +217,11 @@ stmt.setString(2,street);
 stmt.setString(3,indicator);
 stmt.setInt(4,workerid);
 
-con.close();
+
  result=stmt.executeUpdate();
+  stmt.close();
+ con.close();
+
  }catch(Exception e){
     System.out.println("Error while updating worker address: "+e.getMessage());
  }
@@ -231,8 +241,10 @@ stmt=con.prepareStatement(query);
 stmt.setString(1,phone_no);
 stmt.setInt(4,workerid);
 
-con.close();
+
  result=stmt.executeUpdate();
+ stmt.close();
+ con.close();
  }catch(Exception e){
     System.out.println("Error while updating worker's phone number: "+e.getMessage());
  }
@@ -271,6 +283,7 @@ con.close();
     Connection con=null;
  PreparedStatement stmt=null;
  ResultSet rs=null;
+ boolean onduty=false;
 String query="Select is_onduty from Workers where workerid=?";
  try{
 con=DBconnection.getConnection();
@@ -280,17 +293,21 @@ stmt.setInt(1,workerid);
 rs=stmt.executeQuery();
  
 if(rs.next()){
-if(rs.getBoolean("is_onduty")) return true;
-else return false;
+onduty=rs.getBoolean("is_onduty");
 }
 rs.close();
 stmt.close();
 con.close();
+return onduty;
  }catch(Exception e){
     System.out.println("Error while checking worker's presence in : "+e.getMessage());
  }
 return false;
  }
+
+
+ 
+
 
 public String worker_profession(int workerid){
 Connection con=null; PreparedStatement stmt=null;
@@ -373,11 +390,11 @@ stmt.setString(1,workername);
 rs=stmt.executeQuery();
 if(rs.next()){
 worker_id=rs.getInt("workerid");
-return worker_id;
 }
 rs.close();
 stmt.close();
 con.close();
+return worker_id;
  }catch(Exception e){
     System.out.println("Error while fetching worker id: "+e.getMessage());
  }

@@ -80,7 +80,7 @@ if(!user_dao.usernameExists(username)){
              signup_password.setText("");
              return;
         }
-    }
+    }else{
 if(user_dao.verifyUserLogin(username, plainPassword)){
     JOptionPane.showMessageDialog(this, " Logged in successfully. Welcome Back .."+username);
     new DashboardUI("User",user_dao.findUseridbyname(username)).setVisible(true);
@@ -88,6 +88,7 @@ if(user_dao.verifyUserLogin(username, plainPassword)){
 }else{
    JOptionPane.showMessageDialog(this, "Invalid username or Password.", "Error", JOptionPane.ERROR_MESSAGE);
   }
+}
 }
 catch(Exception e){
     JOptionPane.showMessageDialog(this, "ERROR: "+e.getMessage());
@@ -115,15 +116,16 @@ if(!worker_dao.workernameTaken(workername)){
              signup_password.setText("");
              return;
         }
+    }else{
 if(worker_dao.verifyWorkerLogin(workername, plainPassword)){
-    JOptionPane.showMessageDialog(this, " Logged in successfully. Welcome Back .."+workername);
+    JOptionPane.showMessageDialog(this, " Logged in successfully. Welcome Back .. "+workername);
     new DashboardUI("Worker",worker_dao.findWorkeridbyname(workername)).setVisible(true);
     this.dispose();
 }
 else{
         JOptionPane.showMessageDialog(this, "Invalid username or Password.", "Error", JOptionPane.ERROR_MESSAGE);
        }
-     }
+    }
    }catch(Exception e){
     JOptionPane.showMessageDialog(this, "ERROR: "+e.getMessage());
 }

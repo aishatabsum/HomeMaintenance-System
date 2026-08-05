@@ -81,7 +81,39 @@ while(rs.next()){
 
 }
 
+public boolean validateBookingid(int workerid, int bookingid){
+    Connection con=null;
+ PreparedStatement stmt=null;
+ ResultSet rs=null;
+ boolean b_idexists=false;
+String query="Select bookingId from Booking  where workerid=? and bookingId=?";
+ try{
+con=DBconnection.getConnection();
+stmt=con.prepareStatement(query);
 
+stmt.setInt(1,workerid);
+stmt.setInt(2, bookingid);
+rs=stmt.executeQuery();
+
+if(rs.next())
+ b_idexists=true;
+else   b_idexists=false;
+
+ rs.close();
+stmt.close();
+con.close();
+
+if(b_idexists)
+ return true;
+else return false;
+
+ }catch(Exception e){
+    System.out.println("Error while validating booking id for a worker : "+e.getMessage());
+ }
+return false;
+ }
+
+ 
 public boolean updateBookingStatus(int bookingId, String newstatus){
     Connection con=null;
  PreparedStatement stmt=null;

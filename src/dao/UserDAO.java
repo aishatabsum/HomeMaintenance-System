@@ -46,11 +46,12 @@ stmt.setInt(1,userid);
 rs=stmt.executeQuery();
 if(rs.next()){
 user_name=rs.getString("username");
-return user_name;
+
 }
 rs.close();
 stmt.close();
 con.close();
+return user_name;
  }catch(Exception e){
     System.out.println("Error while fetching user name: "+e.getMessage());
  }
@@ -70,11 +71,12 @@ stmt.setString(1,username);
 rs=stmt.executeQuery();
 if(rs.next()){
 user_id=rs.getInt("userid");
-return user_id;
+
 }
 rs.close();
 stmt.close();
 con.close();
+return user_id;
  }catch(Exception e){
     System.out.println("Error while fetching user id: "+e.getMessage());
  }
@@ -140,10 +142,10 @@ return false;
     }
 
 
-public void registerNewUser(String username,String phone_no,int age,String gender,String city,String street, String indicator,String plain_password){
+public boolean registerNewUser(String username,String phone_no,int age,String gender,String city,String street, String indicator,String plain_password){
     if(age<18){
         System.out.println("OOPs , Registration Failed!. you are Under 18! ");
-        return;
+        return false;
     }
  if(!usernameExists(username)){
 Connection con=null;
@@ -165,18 +167,21 @@ stmt.setString(6,street);
 stmt.setString(7,indicator);
 stmt.setString(8,hash);
 stmt.setString(9,salt);
+
+ result=stmt.executeUpdate();
 stmt.close();
 con.close();
- result=stmt.executeUpdate();
  }catch(Exception e){
     System.out.println("Error while fetching user name: "+e.getMessage());
+    return false;
  }
- if(result>0) System.out.println("Registered successfully!");
- else System.out.println("OOPS! registration failed!");
+ if(result>0) {System.out.println("Registered successfully!"); return true;}
+ else {System.out.println("OOPS! registration failed!"); return false;}
  }
- else 
+ else {
     System.out.println("This username already exists: Try usin a different name.\n");
- 
+    return false;
+}
     
     }
 
@@ -227,8 +232,10 @@ stmt.setString(2,street);
 stmt.setString(3,indicator);
 stmt.setInt(4,userid);
 
-con.close();
  result=stmt.executeUpdate();
+stmt.close();
+ con.close();
+ 
  }catch(Exception e){
     System.out.println("Error while updating user address: "+e.getMessage());
  }
@@ -248,8 +255,10 @@ stmt=con.prepareStatement(query);
 stmt.setString(1,phone_no);
 stmt.setInt(4,userid);
 
-con.close();
+
  result=stmt.executeUpdate();
+ stmt.close();
+ con.close();
  }catch(Exception e){
     System.out.println("Error while updating user phone number: "+e.getMessage());
  }

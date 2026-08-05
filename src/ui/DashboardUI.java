@@ -51,7 +51,7 @@ w_dao=new WorkerDAO();
    
      setTitle("Home Assistance Dashboard---Home owner");
      JLabel projectTitle=new JLabel("HomeService --- Owner Dashboard");
-projectTitle.setBounds(50,40,270,40);
+projectTitle.setBounds(50,40,370,40);
 projectTitle.setFont(new Font("Arial",Font.BOLD,20));
 add(projectTitle);
 JLabel welcomeUser= new JLabel("WELCOME , "+ u_dao.findUsernamebyId(id));
@@ -125,7 +125,7 @@ updaddress_btn.addActionListener(new ActionListener() {
    if (role=="Worker"&& id!=-1){
      setTitle("Home Assistance Dashboard---Worker");
       JLabel projectTitle=new JLabel("HomeService --- Worker Dashboard");
-projectTitle.setBounds(50,40,270,40);
+projectTitle.setBounds(50,40,370,40);
 projectTitle.setFont(new Font("Arial",Font.BOLD,20));
 add(projectTitle);
 status_grp=new ButtonGroup();
@@ -318,7 +318,11 @@ updStatus_Panel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
     if(takeid_forstatus.getText().isEmpty()||!(confirm_rbtn.isSelected()||cancel_rbtn.isSelected())){
       JOptionPane.showMessageDialog(this, "Please fill must-fill fields!");
       return;
-    }else{
+    }else if(!b_dao.validateBookingid(id, Integer.parseInt(bookingid))){
+     JOptionPane.showMessageDialog(this, "Invalid bookingid for this worker.");
+     return;
+    }
+    else{
      if(cancel_rbtn.isSelected())
   updated= b_dao.updateBookingStatus(Integer.parseInt(bookingid), "cancelled");
    if(confirm_rbtn.isSelected())

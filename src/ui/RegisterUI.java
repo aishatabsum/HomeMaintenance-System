@@ -29,7 +29,7 @@ private ButtonGroup yesno_grp;
    setBackground(Color.GRAY);
    setLayout(null);
    JLabel projectTitle=new JLabel("HomeService --- Registration");
-projectTitle.setBounds(50,30,250,30);
+projectTitle.setBounds(50,30,300,30);
 projectTitle.setFont(new Font("Arial",Font.BOLD,20));
 add(projectTitle);
 JLabel name_lbl= new JLabel("Enter Your UserName: ");
@@ -134,6 +134,7 @@ setVisible(true);
     private void handleUserRegister(){
  UserDAO u_dao=new UserDAO();
  try{
+    boolean registered = false;
 String username=name.getText().trim();
 String phone=phone_no.getText().trim();
 String plainPass=new String(plain_password.getPassword()).trim();
@@ -152,9 +153,9 @@ if(u_gender.isEmpty()) u_gender="not to mention";
 JOptionPane.showMessageDialog(this, "Please fill must required fields before registering.");
 return;    
 }else{
-    u_dao.registerNewUser(username, phone,int_age , u_gender, u_city, u_street, u_indicator, plainPass);
+    registered=u_dao.registerNewUser(username, phone,int_age , u_gender, u_city, u_street, u_indicator, plainPass);
 }
-if(u_dao.usernameExists(username)){
+if(registered){
     JOptionPane.showMessageDialog(this, "You are now Registered successfully!");
 }else{
     JOptionPane.showMessageDialog(this, "Registration went unsuccessful.Try again.\n");
@@ -175,7 +176,7 @@ ProfessionDAO p_dao=new ProfessionDAO();
     String profname= (String) profDropdown.getSelectedItem();
     Boolean onduty=false;
     if(yes_btn.isSelected()) onduty=true;
-
+boolean registered=false;
 String workername=name.getText().trim();
 String phone=phone_no.getText().trim();
 String plainPass=new String(plain_password.getPassword()).trim();
@@ -193,9 +194,9 @@ if(w_gender.isEmpty()) w_gender="not to mention";
 JOptionPane.showMessageDialog(this, "Please fill must required fields before registering.");
 return;    
 }else{
-    w_dao.registerNewWorker(workername, phone,int_age , w_gender, w_city, w_street, w_indicator, plainPass,onduty, p_dao.findProfidbyname(profname));
+  registered= w_dao.registerNewWorker(workername, phone,int_age , w_gender, w_city, w_street, w_indicator, plainPass,onduty, p_dao.findProfidbyname(profname));
 }
-if(w_dao.workernameTaken(workername)){
+if(registered){
     JOptionPane.showMessageDialog(this, "You are now Registered successfully!");
 }else{
     JOptionPane.showMessageDialog(this, "Registration went unsuccessful.Try again.\n");
